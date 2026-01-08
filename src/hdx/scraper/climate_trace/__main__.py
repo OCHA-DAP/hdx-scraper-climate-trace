@@ -6,19 +6,20 @@ script then creates in HDX.
 """
 
 import logging
-from os.path import dirname, expanduser, join
+from os.path import expanduser, join
 
 from hdx.api.configuration import Configuration
 from hdx.data.user import User
 from hdx.facades.infer_arguments import facade
-from hdx.scraper.climate_trace._version import __version__
-from hdx.scraper.climate_trace.pipeline import Pipeline
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import (
     script_dir_plus_file,
     wheretostart_tempdir_batch,
 )
 from hdx.utilities.retriever import Retrieve
+
+from hdx.scraper.climate_trace._version import __version__
+from hdx.scraper.climate_trace.pipeline import Pipeline
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +79,7 @@ def main(
 if __name__ == "__main__":
     facade(
         main,
-#        hdx_site="dev",
+        # hdx_site="dev",
         user_agent_config_yaml=join(expanduser("~"), ".useragents.yaml"),
         user_agent_lookup=_LOOKUP,
         project_config_yaml=script_dir_plus_file(

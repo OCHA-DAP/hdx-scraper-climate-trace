@@ -1,22 +1,14 @@
 from os.path import join
 
-import pytest
-from hdx.api.configuration import Configuration
-from hdx.scraper.climate_trace.pipeline import Pipeline
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import temp_dir
 from hdx.utilities.retriever import Retrieve
-from hdx.utilities.useragent import UserAgent
+
+from hdx.scraper.climate_trace.pipeline import Pipeline
 
 
 class TestPipeline:
-    def test_pipeline(
-        self,
-        configuration,
-        fixtures_dir,
-        input_dir,
-        config_dir
-    ):
+    def test_pipeline(self, configuration, fixtures_dir, input_dir, config_dir):
         with temp_dir(
             "Test_ClimateTRACE",
             delete_on_success=True,

@@ -2,8 +2,7 @@
 """Climate_trace scraper"""
 
 import logging
-from typing import List, Optional
-
+from typing import Optional
 
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
@@ -14,17 +13,12 @@ logger = logging.getLogger(__name__)
 
 
 class Pipeline:
-
-    def __init__(
-        self, configuration: Configuration, retriever: Retrieve, tempdir: str
-    ):
+    def __init__(self, configuration: Configuration, retriever: Retrieve, tempdir: str):
         self._configuration = configuration
         self._retriever = retriever
         self._tempdir = tempdir
 
-
     def generate_dataset(self) -> Optional[Dataset]:
-
         # To be generated
         dataset_name = None
         dataset_title = None
