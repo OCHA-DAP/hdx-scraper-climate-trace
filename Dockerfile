@@ -1,15 +1,42 @@
+# ----------------------------------------------------------------------------
+# Stage 1: Builder
+# ----------------------------------------------------------------------------
+FROM public.ecr.aws/unocha/python:3.13-stable AS builder
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+WORKDIR /app
+
+# 1. Install System Dependencies
+RUN --mount=type=cache,target=/var/cache/apk \
+    apk add --upgrade \
+    git
+
+# 2. Install Dependencies
+COPY pyproject.toml uv.lock ./
+#    --compile: Optimizes startup time
+RUN uv sync --frozen --no-dev --no-install-project --compile
+
+# 3. Install Your Project (Non-Editable)
+COPY . .
+#    Installs your code into site-packages so we don't need 'COPY . .' later
+RUN uv pip install --no-deps .
+
+# ----------------------------------------------------------------------------
+# Stage 2: Final Runtime
+# ----------------------------------------------------------------------------
 FROM public.ecr.aws/unocha/python:3.13-stable
 
-WORKDIR /srv
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-COPY .. .
+WORKDIR /app
 
-RUN --mount=source=.git,target=.git,type=bind \
-    apk add --no-cache --upgrade --virtual .build-deps \
-        git && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir . && \
-    apk del .build-deps && \
-    rm -rf /var/lib/apk/*
+# 2. Copy the Virtual Environment
+ENV VIRTUAL_ENV=/app/.venv
+COPY --from=builder /app/.venv ${VIRTUAL_ENV}
+ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
 
-CMD "python3 run.py"
+# 3. Copy the runner script
+COPY run.py .
+
+CMD ["python3", "run.py"]
