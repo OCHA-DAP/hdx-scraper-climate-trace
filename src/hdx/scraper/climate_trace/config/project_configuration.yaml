@@ -1,5 +1,18 @@
 # Collector specific configuration
-base_url: "api.climatetrace.org"
+base_url: "https://api.climatetrace.org"
+
+gases: "/v7/definitions/gases"
+
+endpoints:
+  sources:
+    url: "/v7/sources"
+    min_year: 2021
+  source_by_id:
+    url: "/v7/sources/:id"
+    min_year: 2021
+  aggregate:
+    url: "/v7/sources/emissions"
+    min_year: 2015
 
 dataset_title: "Climate TRACE GHG and non-GHG Emissions Inventory"
 

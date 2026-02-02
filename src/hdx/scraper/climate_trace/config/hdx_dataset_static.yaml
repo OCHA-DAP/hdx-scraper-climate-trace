@@ -11,7 +11,7 @@ dataset_source: Climate TRACE
 package_creator: HDX Data Systems Team
 private: False
 maintainer:
-owner_org:
+owner_org: climate-trace
 data_update_frequency: 30
 notes: |
   Climate TRACE is a non-profit coalition of organizations building a timely, open, and accessible inventory of exactly where greenhouse gas emissions are coming from. Climate TRACE estimates greenhouse gas (GHG) and air pollutant emissions for over 2.7 million sources (from over 744 million assets), and every single country globally.
