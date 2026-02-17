@@ -1,24 +1,18 @@
 # Collector specific configuration
-base_url: "https://api.climatetrace.org"
+admin_url: "https://api.climatetrace.org/v7/admins/{admin_id}/subdivisions"
+emissions_url: "https://api.climatetrace.org/v7/sources/emissions"
 
-gases: "/v7/definitions/gases"
+gases:
+  - "co2e_20yr"
+  - "pm2_5"
 
-endpoints:
-  sources:
-    url: "/v7/sources"
-    min_year: 2021
-  source_by_id:
-    url: "/v7/sources/:id"
-    min_year: 2021
-  aggregate:
-    url: "/v7/sources/emissions"
-    min_year: 2015
+sectors:
+  - "agriculture"
+  - "power"
+  - "transportation"
 
 dataset_title: "Climate TRACE GHG and non-GHG Emissions Inventory"
 
 tags:
-  - air pollutants
+  - climate-weather
   - environment
-  - geodata
-  - greenhouse gas emissions
-  - points of interest-poi

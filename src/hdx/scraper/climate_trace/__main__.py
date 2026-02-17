@@ -11,6 +11,7 @@ from os.path import expanduser, join
 from hdx.api.configuration import Configuration
 from hdx.data.user import User
 from hdx.facades.infer_arguments import facade
+from hdx.location.country import Country
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import (
@@ -57,14 +58,16 @@ def main(
                 save=save,
                 use_saved=use_saved,
             )
-            year = now_utc().year
-            pipeline = Pipeline(configuration, retriever, tempdir)
-            pipeline.get_data(end_year=year)
-            countries = pipeline.process_data()
+            today = now_utc()
+            iso_list = list(Country.countriesdata()["countries"].keys())
 
-            for country in countries:
-                logger.info(f"Generating dataset for {country}")
-                dataset = pipeline.generate_country_dataset()
+            pipeline = Pipeline(configuration, retriever, tempdir)
+            pipeline.get_admin_data(iso_list)
+            pipeline.get_emissions_data(today=today)
+
+            for iso3 in iso_list:
+                logger.info(f"Generating dataset for {iso3}")
+                dataset = pipeline.generate_country_dataset(iso3)
                 if dataset:
                     dataset.update_from_yaml(
                         script_dir_plus_file(
@@ -74,7 +77,6 @@ def main(
                     dataset.create_in_hdx(
                         remove_additional_resources=True,
                         match_resource_order=False,
-                        hxl_update=False,
                         updated_by_script=_UPDATED_BY_SCRIPT,
                         batch=info["batch"],
                     )

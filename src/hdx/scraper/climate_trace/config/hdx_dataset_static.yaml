@@ -10,7 +10,7 @@ caveats: See methodology documents for sector specific caveats
 dataset_source: Climate TRACE
 package_creator: HDX Data Systems Team
 private: False
-maintainer:
+maintainer: 8c24c8ce-f313-4020-bda6-00ae42b2aef1
 owner_org: climate-trace
 data_update_frequency: 30
 notes: |
