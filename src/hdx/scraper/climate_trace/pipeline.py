@@ -134,7 +134,7 @@ class Pipeline:
             admin_name = (
                 admin_type
                 if admin_type == "cities"
-                else f"{admin_type}_{'_'.join(admin_levels)}"
+                else f"{admin_type}_{'_'.join(sorted(list(admin_levels)))}"
             )
             resource_name = f"{iso3.lower()}_{gas}_{admin_name}.csv"
             resource_info = {

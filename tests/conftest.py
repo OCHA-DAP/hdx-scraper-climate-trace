@@ -45,10 +45,8 @@ def configuration(config_dir):
             {"name": tag}
             # Change tags below to match those needed in tests
             for tag in (
-                "air pollutants",
+                "climate-weather",
                 "environment",
-                "geodata",
-                "greenhouse gas emissions",
                 "points of interest-poi",
             )
         ],
