@@ -1,6 +1,7 @@
 from datetime import datetime
 from os.path import join
 
+from hdx.utilities.compare import assert_files_same
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import temp_dir
 from hdx.utilities.retriever import Retrieve
@@ -94,3 +95,10 @@ class TestPipeline:
                         "format": "csv",
                     },
                 ]
+
+                for resource in resources:
+                    file_name = resource["name"]
+                    assert_files_same(
+                        join(fixtures_dir, file_name),
+                        join(tempdir, file_name),
+                    )
