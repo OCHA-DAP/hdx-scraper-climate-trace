@@ -1,12 +1,12 @@
 # Collector specific configuration
 admin_url: "https://api.climatetrace.org/v7/admins/{admin_id}/subdivisions"
-cities_url: "https://api.climatetrace.org/v7/cities?country={admin_id}"
+city_url: "https://api.climatetrace.org/v7/cities?country={admin_id}"
 emissions_url: "https://api.climatetrace.org/v7/sources/emissions"
 source_url: "https://api.climatetrace.org/v7/sources"
 
 gases:
-  - "co2e_20yr"
-  - "pm2_5"
+  co2e_20yr: "carbon dioxide equivalent (CO2e)"
+  pm2_5: "PM2.5"
 
 sectors:
   - "buildings"
@@ -15,7 +15,7 @@ sectors:
   - "power"
   - "transportation"
 
-dataset_title: "Climate TRACE GHG and non-GHG Emissions Inventory"
+dataset_title: "Climate TRACE Greenhouse Gas and Air Pollutant Emissions"
 
 tags:
   - climate-weather

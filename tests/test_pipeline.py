@@ -37,7 +37,7 @@ class TestPipeline:
                 )
                 assert dataset == {
                     "name": "afg-climate-trace",
-                    "title": "Afghanistan: Climate TRACE GHG and non-GHG Emissions Inventory",
+                    "title": "Afghanistan: Climate TRACE Greenhouse Gas and Air Pollutant Emissions",
                     "dataset_date": "[2024-02-01T00:00:00 TO 2025-12-31T23:59:59]",
                     "tags": [
                         {
@@ -71,27 +71,27 @@ class TestPipeline:
                 assert resources == [
                     {
                         "name": "afg_co2e_20yr_admin_0_1.csv",
-                        "description": "Emissions data for co2e_20yr in the past 2 years in AFG at the admin 0 1 level",
+                        "description": "Afghanistan carbon dioxide equivalent (CO2e) emissions over the past 2 years at the admin 0 and 1 level.",
                         "format": "csv",
                     },
                     {
-                        "name": "afg_co2e_20yr_cities.csv",
-                        "description": "Emissions data for co2e_20yr in the past 2 years in AFG at the cities level",
+                        "name": "afg_co2e_20yr_city.csv",
+                        "description": "Afghanistan carbon dioxide equivalent (CO2e) emissions over the past 2 years at the city level.",
                         "format": "csv",
                     },
                     {
                         "name": "afg_pm2_5_admin_0.csv",
-                        "description": "Emissions data for pm2_5 in the past 2 years in AFG at the admin 0 level",
+                        "description": "Afghanistan PM2.5 emissions over the past 2 years at the admin 0 level.",
                         "format": "csv",
                     },
                     {
-                        "name": "afg_co2e_20yr_sources.csv",
-                        "description": "Emissions data for co2e_20yr in the past 2 years in AFG at the sources level",
+                        "name": "afg_co2e_20yr_source.csv",
+                        "description": "Afghanistan carbon dioxide equivalent (CO2e) emissions over the past 2 years at the source level.",
                         "format": "csv",
                     },
                     {
-                        "name": "afg_pm2_5_sources.csv",
-                        "description": "Emissions data for pm2_5 in the past 2 years in AFG at the sources level",
+                        "name": "afg_pm2_5_source.csv",
+                        "description": "Afghanistan PM2.5 emissions over the past 2 years at the source level.",
                         "format": "csv",
                     },
                 ]

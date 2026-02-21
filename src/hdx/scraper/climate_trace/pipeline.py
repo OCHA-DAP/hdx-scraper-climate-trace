@@ -51,13 +51,13 @@ class Pipeline:
                 logger.warning(f"No admin units found for {iso3}")
                 admin1_json = []
             admin_info.extend(admin1_json)
-            cities_url = self._configuration["cities_url"].format(admin_id=iso3)
+            city_url = self._configuration["city_url"].format(admin_id=iso3)
             try:
-                cities_json = self._retriever.download_json(cities_url)
+                city_json = self._retriever.download_json(city_url)
             except DownloadError:
                 logger.warning(f"No cities found for {iso3}")
-                cities_json = []
-            self.admins[iso3] = {"admin": admin_info, "cities": cities_json}
+                city_json = []
+            self.admins[iso3] = {"admin": admin_info, "city": city_json}
         return
 
     def process_emissions_admin_rows(
@@ -96,7 +96,7 @@ class Pipeline:
         base_url = self._configuration["emissions_url"]
         for iso3, admin_types in self.admins.items():
             self.data[iso3] = {}
-            for gas in self._configuration["gases"]:
+            for gas, _ in self._configuration["gases"].items():
                 for admin_type, admin_units in admin_types.items():
                     self.data[iso3][f"{gas}|{admin_type}"] = []
                     if gas == "pm2_5" and admin_type != "admin":
@@ -123,8 +123,8 @@ class Pipeline:
         for iso3, _ in self.admins.items():
             if iso3 not in self.data:
                 self.data[iso3] = {}
-            for gas in self._configuration["gases"]:
-                self.data[iso3][f"{gas}|sources"] = []
+            for gas, _ in self._configuration["gases"].items():
+                self.data[iso3][f"{gas}|source"] = []
                 for sector in self._configuration["sectors"]:
                     for year in range(min_year, max_year + 1):
                         for page in range(10000):
@@ -133,7 +133,7 @@ class Pipeline:
                             if json is None:
                                 break
                             rows = self.process_emissions_source_rows(json)
-                            self.data[iso3][f"{gas}|sources"].extend(rows)
+                            self.data[iso3][f"{gas}|source"].extend(rows)
                             if len(json) < 10000:
                                 break
         return
@@ -171,19 +171,20 @@ class Pipeline:
                 if admin_type == "admin":
                     admin_levels.add(str(row["level"]))
                 if not subnational:
-                    if admin_type in ["cities", "sources"] or (
+                    if admin_type in ["city", "source"] or (
                         admin_type == "admin" and row["level"] > 0
                     ):
                         subnational = True
-            admin_name = (
-                admin_type
-                if admin_type in ["cities", "sources"]
-                else f"{admin_type}_{'_'.join(sorted(list(admin_levels)))}"
-            )
+            admin_name = admin_type
+            admin_desc = admin_type
+            if admin_type == "admin":
+                admin_name = f"admin_{'_'.join(sorted(list(admin_levels)))}"
+                admin_desc = f"admin {' and '.join(sorted(list(admin_levels)))}"
+            gas_desc = self._configuration["gases"][gas]
             resource_name = f"{iso3.lower()}_{gas}_{admin_name}.csv"
             resource_info = {
                 "name": resource_name,
-                "description": f"Emissions data for {gas} in the past 2 years in {iso3} at the {admin_name.replace('_', ' ')} level",
+                "description": f"{country_name} {gas_desc} emissions over the past 2 years at the {admin_desc} level.",
             }
 
             dataset.generate_resource(
