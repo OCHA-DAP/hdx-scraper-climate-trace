@@ -71,12 +71,7 @@ class TestPipeline:
                 assert resources == [
                     {
                         "name": "afg_co2e_20yr_admin_0_1.csv",
-                        "description": "Afghanistan carbon dioxide equivalent (CO2e) emissions over the past 2 years at the admin 0 and 1 level.",
-                        "format": "csv",
-                    },
-                    {
-                        "name": "afg_co2e_20yr_city.csv",
-                        "description": "Afghanistan carbon dioxide equivalent (CO2e) emissions over the past 2 years at the city level.",
+                        "description": "Afghanistan carbon dioxide equivalent (CO2e) on a 20-year time horizon emissions over the past 2 years at the admin 0 and 1 level.",
                         "format": "csv",
                     },
                     {
@@ -85,8 +80,13 @@ class TestPipeline:
                         "format": "csv",
                     },
                     {
+                        "name": "afg_co2e_20yr_city.csv",
+                        "description": "Afghanistan carbon dioxide equivalent (CO2e) on a 20-year time horizon emissions over the past 2 years at the city level.",
+                        "format": "csv",
+                    },
+                    {
                         "name": "afg_co2e_20yr_source.csv",
-                        "description": "Afghanistan carbon dioxide equivalent (CO2e) emissions over the past 2 years at the source level.",
+                        "description": "Afghanistan carbon dioxide equivalent (CO2e) on a 20-year time horizon emissions over the past 2 years at the source level.",
                         "format": "csv",
                     },
                     {

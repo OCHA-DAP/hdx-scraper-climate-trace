@@ -5,7 +5,17 @@ emissions_url: "https://api.climatetrace.org/v7/sources/emissions"
 source_url: "https://api.climatetrace.org/v7/sources"
 
 gases:
-  co2e_20yr: "carbon dioxide equivalent (CO2e)"
+  admin:
+    - co2e_20yr
+    - pm2_5
+  city:
+    - co2e_20yr
+  source:
+    - co2e_20yr
+    - pm2_5
+
+gas_names:
+  co2e_20yr: "carbon dioxide equivalent (CO2e) on a 20-year time horizon"
   pm2_5: "PM2.5"
 
 sectors:

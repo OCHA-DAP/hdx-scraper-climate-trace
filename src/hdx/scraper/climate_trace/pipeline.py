@@ -96,8 +96,8 @@ class Pipeline:
         base_url = self._configuration["emissions_url"]
         for iso3, admin_types in self.admins.items():
             self.data[iso3] = {}
-            for gas, _ in self._configuration["gases"].items():
-                for admin_type, admin_units in admin_types.items():
+            for admin_type, admin_units in admin_types.items():
+                for gas in self._configuration["gases"][admin_type]:
                     self.data[iso3][f"{gas}|{admin_type}"] = []
                     if gas == "pm2_5" and admin_type != "admin":
                         continue
@@ -123,7 +123,7 @@ class Pipeline:
         for iso3, _ in self.admins.items():
             if iso3 not in self.data:
                 self.data[iso3] = {}
-            for gas, _ in self._configuration["gases"].items():
+            for gas in self._configuration["gases"]["source"]:
                 self.data[iso3][f"{gas}|source"] = []
                 for sector in self._configuration["sectors"]:
                     for year in range(min_year, max_year + 1):
@@ -180,7 +180,7 @@ class Pipeline:
             if admin_type == "admin":
                 admin_name = f"admin_{'_'.join(sorted(list(admin_levels)))}"
                 admin_desc = f"admin {' and '.join(sorted(list(admin_levels)))}"
-            gas_desc = self._configuration["gases"][gas]
+            gas_desc = self._configuration["gas_names"][gas]
             resource_name = f"{iso3.lower()}_{gas}_{admin_name}.csv"
             resource_info = {
                 "name": resource_name,
