@@ -37,7 +37,7 @@ class TestPipeline:
                 )
                 assert dataset == {
                     "name": "afg-climate-trace",
-                    "title": "Afghanistan: Climate TRACE Greenhouse Gas and Air Pollutant Emissions",
+                    "title": "Afghanistan: Greenhouse Gas and Air Pollutant Emissions",
                     "dataset_date": "[2024-02-01T00:00:00 TO 2025-12-31T23:59:59]",
                     "tags": [
                         {
@@ -70,18 +70,28 @@ class TestPipeline:
                 resources = dataset.get_resources()
                 assert resources == [
                     {
+                        "name": "afg_ch4_admin_0_1.csv",
+                        "description": "Afghanistan methane emissions over the past 2 years at the admin 0 and 1 level.",
+                        "format": "csv",
+                    },
+                    {
                         "name": "afg_co2e_20yr_admin_0_1.csv",
                         "description": "Afghanistan carbon dioxide equivalent (CO2e) on a 20-year time horizon emissions over the past 2 years at the admin 0 and 1 level.",
                         "format": "csv",
                     },
                     {
-                        "name": "afg_pm2_5_admin_0.csv",
-                        "description": "Afghanistan PM2.5 emissions over the past 2 years at the admin 0 level.",
+                        "name": "afg_ch4_city.csv",
+                        "description": "Afghanistan methane emissions over the past 2 years at the city level.",
                         "format": "csv",
                     },
                     {
                         "name": "afg_co2e_20yr_city.csv",
                         "description": "Afghanistan carbon dioxide equivalent (CO2e) on a 20-year time horizon emissions over the past 2 years at the city level.",
+                        "format": "csv",
+                    },
+                    {
+                        "name": "afg_ch4_source.csv",
+                        "description": "Afghanistan methane emissions over the past 2 years at the source level.",
                         "format": "csv",
                     },
                     {

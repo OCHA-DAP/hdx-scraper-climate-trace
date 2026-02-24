@@ -6,15 +6,18 @@ source_url: "https://api.climatetrace.org/v7/sources"
 
 gases:
   admin:
+    - ch4
     - co2e_20yr
-    - pm2_5
   city:
+    - ch4
     - co2e_20yr
   source:
+    - ch4
     - co2e_20yr
     - pm2_5
 
 gas_names:
+  ch4: "methane"
   co2e_20yr: "carbon dioxide equivalent (CO2e) on a 20-year time horizon"
   pm2_5: "PM2.5"
 
@@ -25,7 +28,7 @@ sectors:
   - "power"
   - "transportation"
 
-dataset_title: "Climate TRACE Greenhouse Gas and Air Pollutant Emissions"
+dataset_title: "Greenhouse Gas and Air Pollutant Emissions"
 
 tags:
   - climate-weather

@@ -97,17 +97,15 @@ class Pipeline:
         for iso3, admin_types in self.admins.items():
             self.data[iso3] = {}
             for admin_type, admin_units in admin_types.items():
+                if admin_type == "admin":
+                    admin_id_type = "gadmId"
+                else:
+                    admin_id_type = "cityId"
                 for gas in self._configuration["gases"][admin_type]:
                     self.data[iso3][f"{gas}|{admin_type}"] = []
-                    if gas == "pm2_5" and admin_type != "admin":
-                        continue
                     for admin_unit in admin_units:
                         admin_id = admin_unit["id"]
                         for year in range(min_year, max_year + 1):
-                            if admin_type == "admin":
-                                admin_id_type = "gadmId"
-                            else:
-                                admin_id_type = "cityId"
                             url = f"{base_url}?year={year}&gas={gas}&{admin_id_type}={admin_id}"
                             json = self._retriever.download_json(url)
                             rows = self.process_emissions_admin_rows(json, admin_unit)
