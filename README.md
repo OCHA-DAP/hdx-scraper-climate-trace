@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/OCHA-DAP/hdx-scraper-climate-trace/badge.svg?branch=main&ts=1)](https://coveralls.io/github/OCHA-DAP/hdx-scraper-climate-trace?branch=main)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-This script ...
+This script downloads data from the Climate TRACE API and creates country level datasets on HDX regarding greenhouse gas emissions at the admin 0, admin 1, city, and source level.
 
 ## Development
 
