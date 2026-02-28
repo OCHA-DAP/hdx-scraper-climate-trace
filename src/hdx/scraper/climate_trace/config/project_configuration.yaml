@@ -1,1 +1,36 @@
 # Collector specific configuration
+admin_url: "https://api.climatetrace.org/v7/admins/{admin_id}/subdivisions"
+city_url: "https://api.climatetrace.org/v7/cities?country={admin_id}"
+emissions_url: "https://api.climatetrace.org/v7/sources/emissions"
+source_url: "https://api.climatetrace.org/v7/sources"
+
+gases:
+  admin:
+    - ch4
+    - co2e_20yr
+  city:
+    - ch4
+    - co2e_20yr
+  source:
+    - ch4
+    - co2e_20yr
+    - pm2_5
+
+gas_names:
+  ch4: "methane"
+  co2e_20yr: "carbon dioxide equivalent (CO2e) on a 20-year time horizon"
+  pm2_5: "PM2.5"
+
+sectors:
+  - "buildings"
+  - "mineral-extraction"
+  - "manufacturing"
+  - "power"
+  - "transportation"
+
+dataset_title: "Greenhouse Gas and Air Pollutant Emissions"
+
+tags:
+  - climate-weather
+  - environment
+  - points of interest-poi
