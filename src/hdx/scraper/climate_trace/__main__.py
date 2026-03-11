@@ -15,6 +15,7 @@ from hdx.location.country import Country
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import (
+    progress_storing_folder,
     script_dir_plus_file,
     wheretostart_tempdir_batch,
 )
@@ -60,14 +61,21 @@ def main(
             )
             today = now_utc()
             pipeline = Pipeline(configuration, retriever, tempdir, today)
-
-            for iso3 in list(Country.countriesdata()["countries"].keys()):
+            countries = [
+                {"iso3": x} for x in Country.countriesdata()["countries"].keys()
+            ]
+            for _, nextdict in progress_storing_folder(info, countries, "iso3"):
+                iso3 = nextdict["iso3"]
                 admin_info, city_json = pipeline.get_admin_data(iso3)
-                admin_data, city_data = pipeline.get_emissions_admin_data(admin_info, city_json)
+                admin_data, city_data = pipeline.get_emissions_admin_data(
+                    admin_info, city_json
+                )
                 source_data = pipeline.get_emissions_source_data(iso3)
 
                 logger.info(f"Generating dataset for {iso3}")
-                dataset = pipeline.generate_country_dataset(iso3, admin_data, city_data, source_data)
+                dataset = pipeline.generate_country_dataset(
+                    iso3, admin_data, city_data, source_data
+                )
                 if dataset:
                     dataset.update_from_yaml(
                         script_dir_plus_file(

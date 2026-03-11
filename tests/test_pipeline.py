@@ -27,11 +27,16 @@ class TestPipeline:
                 )
                 today = datetime(2026, 2, 15)
                 pipeline = Pipeline(configuration, retriever, tempdir, today)
-                pipeline.get_admin_data(["AFG"])
-                pipeline.get_emissions_admin_data()
-                pipeline.get_emissions_source_data()
+                iso3 = "AFG"
+                admin_info, city_json = pipeline.get_admin_data(iso3)
+                admin_data, city_data = pipeline.get_emissions_admin_data(
+                    admin_info, city_json
+                )
+                source_data = pipeline.get_emissions_source_data(iso3)
 
-                dataset = pipeline.generate_country_dataset("AFG")
+                dataset = pipeline.generate_country_dataset(
+                    iso3, admin_data, city_data, source_data
+                )
                 dataset.update_from_yaml(
                     path=join(config_dir, "hdx_dataset_static.yaml")
                 )

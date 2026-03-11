@@ -84,7 +84,9 @@ class Pipeline:
             rows.append(row)
         return rows
 
-    def get_emissions_admin_data(self, admin_info: list, city_json: list) -> tuple[dict, dict]:
+    def get_emissions_admin_data(
+        self, admin_info: list, city_json: list
+    ) -> tuple[dict, dict]:
         min_year = self.min_date.year
         max_year = self.today.year
 
@@ -105,7 +107,7 @@ class Pipeline:
 
         admin_data = {}
         for gas in gases["admin"]:
-            admin_data[gas] = get_data_for_type(gas,"gadmId", admin_info)
+            admin_data[gas] = get_data_for_type(gas, "gadmId", admin_info)
         city_data = {}
         for gas in gases["city"]:
             city_data[gas] = get_data_for_type(gas, "cityId", city_json)
@@ -133,7 +135,9 @@ class Pipeline:
                             break
         return source_data
 
-    def generate_country_dataset(self, iso3: str, admin_data, city_data, source_data) -> Dataset | None:
+    def generate_country_dataset(
+        self, iso3: str, admin_data, city_data, source_data
+    ) -> Dataset | None:
         country_name = Country.get_country_name_from_iso3(iso3)
         dataset_name = f"{iso3.lower()}-climate-trace"
         dataset_title = f"{country_name}: {self._configuration['dataset_title']}"
@@ -150,86 +154,55 @@ class Pipeline:
 
         subnational = False
         dates = set()
+
+        def extract_dates(row):
+            if "month" in row:
+                dates.add(f"{row['year']}-{str(row['month']).zfill(2)}")
+            else:
+                dates.add(f"{row['year']}-1")
+                dates.add(f"{row['year']}-12")
+
+        def create_resource(gas, rows, suffix, level_desc):
+            gas_desc = self._configuration["gas_names"][gas]
+            resource_info = {
+                "name": f"{iso3.lower()}_{gas}_{suffix}.csv",
+                "description": f"{country_name} {gas_desc} emissions over the past 2 years at the {level_desc} level.",
+            }
+            dataset.generate_resource(
+                self._tempdir, resource_info["name"], rows, resource_info
+            )
+
+        # --- 1. Process Admin Data ---
         for gas, rows in admin_data.items():
-            if len(rows) == 0:
+            if not rows:
                 continue
+
             admin_levels = set()
             for row in rows:
-                if "month" in row:
-                    date = f"{row['year']}-{str(row['month']).zfill(2)}"
-                    dates.add(date)
-                else:
-                    dates.add(f"{row['year']}-1")
-                    dates.add(f"{row['year']}-12")
+                extract_dates(row)
                 admin_levels.add(str(row["level"]))
-                if not subnational:
-                    if row["level"] > 0:
-                        subnational = True
-            admin_name = f"admin_{'_'.join(sorted(list(admin_levels)))}"
-            admin_desc = f"admin {' and '.join(sorted(list(admin_levels)))}"
-            gas_desc = self._configuration["gas_names"][gas]
-            resource_name = f"{iso3.lower()}_{gas}_{admin_name}.csv"
-            resource_info = {
-                "name": resource_name,
-                "description": f"{country_name} {gas_desc} emissions over the past 2 years at the {admin_desc} level.",
-            }
+                if row["level"] > 0:
+                    subnational = True
 
-            dataset.generate_resource(
-                self._tempdir,
-                resource_info["name"],
+            sorted_levels = sorted(admin_levels)
+            create_resource(
+                gas,
                 rows,
-                resource_info,
+                suffix=f"admin_{'_'.join(sorted_levels)}",
+                level_desc=f"admin {' and '.join(sorted_levels)}",
             )
 
-        for gas, rows in city_data.items():
-            if len(rows) == 0:
-                continue
-            for row in rows:
-                if "month" in row:
-                    date = f"{row['year']}-{str(row['month']).zfill(2)}"
-                    dates.add(date)
-                else:
-                    dates.add(f"{row['year']}-1")
-                    dates.add(f"{row['year']}-12")
-            gas_desc = self._configuration["gas_names"][gas]
-            resource_name = f"{iso3.lower()}_{gas}_city.csv"
-            resource_info = {
-                "name": resource_name,
-                "description": f"{country_name} {gas_desc} emissions over the past 2 years at the city level.",
-            }
+        # --- 2. Process City and Source Data ---
+        for data_dict, level_name in [(city_data, "city"), (source_data, "source")]:
+            for gas, rows in data_dict.items():
+                if not rows:
+                    continue
 
-            dataset.generate_resource(
-                self._tempdir,
-                resource_info["name"],
-                rows,
-                resource_info,
-            )
-            subnational = True
+                for row in rows:
+                    extract_dates(row)
 
-        for gas, rows in source_data.items():
-            if len(rows) == 0:
-                continue
-            for row in rows:
-                if "month" in row:
-                    date = f"{row['year']}-{str(row['month']).zfill(2)}"
-                    dates.add(date)
-                else:
-                    dates.add(f"{row['year']}-1")
-                    dates.add(f"{row['year']}-12")
-            gas_desc = self._configuration["gas_names"][gas]
-            resource_name = f"{iso3.lower()}_{gas}_source.csv"
-            resource_info = {
-                "name": resource_name,
-                "description": f"{country_name} {gas_desc} emissions over the past 2 years at the source level.",
-            }
-
-            dataset.generate_resource(
-                self._tempdir,
-                resource_info["name"],
-                rows,
-                resource_info,
-            )
-            subnational = True
+                create_resource(gas, rows, suffix=level_name, level_desc=level_name)
+                subnational = True
 
         start_date = f"{min(dates)}-1"
         end_year, end_month = max(dates).split("-")
