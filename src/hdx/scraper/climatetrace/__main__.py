@@ -15,17 +15,18 @@ from hdx.location.country import Country
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import (
+    progress_storing_folder,
     script_dir_plus_file,
     wheretostart_tempdir_batch,
 )
 from hdx.utilities.retriever import Retrieve
 
-from hdx.scraper.climate_trace._version import __version__
-from hdx.scraper.climate_trace.pipeline import Pipeline
+from hdx.scraper.climatetrace._version import __version__
+from hdx.scraper.climatetrace.pipeline import Pipeline
 
 logger = logging.getLogger(__name__)
 
-_LOOKUP = "hdx-scraper-climate-trace"
+_LOOKUP = "hdx-scraper-climatetrace"
 _SAVED_DATA_DIR = "saved_data"  # Keep in repo to avoid deletion in /tmp
 _UPDATED_BY_SCRIPT = "HDX Scraper: Climate TRACE"
 
@@ -59,16 +60,22 @@ def main(
                 use_saved=use_saved,
             )
             today = now_utc()
-            iso_list = list(Country.countriesdata()["countries"].keys())
-
             pipeline = Pipeline(configuration, retriever, tempdir, today)
-            pipeline.get_admin_data(iso_list)
-            pipeline.get_emissions_admin_data()
-            pipeline.get_emissions_source_data()
+            countries = [
+                {"iso3": x} for x in Country.countriesdata()["countries"].keys()
+            ]
+            for _, nextdict in progress_storing_folder(info, countries, "iso3"):
+                iso3 = nextdict["iso3"]
+                admin_info, city_json = pipeline.get_admin_data(iso3)
+                admin_data, city_data = pipeline.get_emissions_admin_data(
+                    admin_info, city_json
+                )
+                source_data = pipeline.get_emissions_source_data(iso3)
 
-            for iso3 in iso_list:
                 logger.info(f"Generating dataset for {iso3}")
-                dataset = pipeline.generate_country_dataset(iso3)
+                dataset = pipeline.generate_country_dataset(
+                    iso3, admin_data, city_data, source_data
+                )
                 if dataset:
                     dataset.update_from_yaml(
                         script_dir_plus_file(
